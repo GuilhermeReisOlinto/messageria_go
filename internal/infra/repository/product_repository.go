@@ -24,3 +24,27 @@ func (r *ProductRepositoryMsql) Create(product *entity.Product) error {
 
 	return nil
 }
+
+func (r *ProductRepositoryMsql) FindAll() ([]*entity.Product, error) {
+	rows, err := r.DB.Query("SELECT id, name, price FROM products")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var products []*entity.Product
+
+	for rows.Next() {
+		var product entity.Product
+		err = rows.Scan(&product.ID, &product.Name, &product.Price)
+		if err != nil {
+			return nil, err
+		}
+
+		products = append(products, &product)
+	}
+
+	return products, nil
+}
