@@ -1,0 +1,2 @@
+$ docker-compose exec mysql bash
+ mysql -uroot -p products
