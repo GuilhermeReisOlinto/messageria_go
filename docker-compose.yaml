@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  goapp:
+    build: .
+    volumes:
+      - .:/go/app
+    platform: linux/amd64
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: products
+      MYSQL_PASSWORD: root
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - ./zookeeper-data:/var/lib/zookeeper/data 
+
+  kafka:
+    image: confluentinc/cp-server:7.3.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSATION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSATION_STATE_LOG_REPLICATION_FACTOR: 1
+      CONFLUENT_METRICS_ENABLE: 'false'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    volumes:
+      - ./kafka-data:/var/lib/kafka/data 
