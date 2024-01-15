@@ -12,6 +12,8 @@ import (
 	"github.com/GuilhermeReisOlinto/messageria_go/internal/infra/repository"
 	"github.com/GuilhermeReisOlinto/messageria_go/internal/infra/web"
 	"github.com/GuilhermeReisOlinto/messageria_go/internal/usecase"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
