@@ -17,7 +17,9 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(host.docker.internal:3306/products)")
+	dns := "root:root@tcp(host.docker.internal:3306)/products"
+
+	db, err := sql.Open("mysql",dns)
 	if err != nil {
 		panic(err)
 	}

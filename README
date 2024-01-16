@@ -1,2 +1,12 @@
 $ docker-compose exec mysql bash
  mysql -uroot -p products
+ create table products (id varchar(255), name varchar(255), price float);
+
+
+#kafka
+$ docker-compose exec kafka bash
+kafka-topics --bootstrap-server=localhost:9092 --topic=products --create
+
+
+$ docker-compose exec goapp bash
+go run cmd/app/main.go
