@@ -10,3 +10,7 @@ kafka-topics --bootstrap-server=localhost:9092 --topic=products --create
 
 $ docker-compose exec goapp bash
 go run cmd/app/main.go
+
+$ kafka-console-producer --bootstrap-server=localhost:9092 --topic=products
+
+$ docker-compose exec zookeeper bash
